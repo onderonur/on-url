@@ -2,14 +2,14 @@ import React, { useCallback, useReducer, useState } from 'react';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { isServer } from '@/utils';
 import { Formik, Form, FormikConfig } from 'formik';
-import { Maybe, ShortUrlInput } from '@/types';
+import { Maybe } from '@/types';
 import BaseTextField from '@/components/BaseTextField';
 import { ShortUrlData } from '@/api/models/ShortUrl';
 import UrlShortenerSvg from './components/UrlShortenerSvg';
 import ExternalLink from '@/components/ExternalLink';
 import ShareButtons from './components/ShareButtons';
 import UrlQrCode from './components/UrlQrCode';
-import { shortUrlInputValidationSchema } from '@/utils/validationSchemas';
+import { ShortUrlInput, shortUrlInputSchema } from '@/utils/validationSchemas';
 import { Box, InputAdornment, Typography } from '@material-ui/core';
 import LinkIcon from '@material-ui/icons/Link';
 import BaseButton from '@/components/BaseButton';
@@ -28,12 +28,7 @@ const qrCodeSize = 256;
 
 type OnSubmit<FormValues> = FormikConfig<FormValues>['onSubmit'];
 
-type UrlFormValues = ShortUrlInput;
-
-const initialValues: UrlFormValues = {
-  url: '',
-  customAlias: '',
-};
+const initialValues: ShortUrlInput = shortUrlInputSchema.getDefault();
 
 interface State {
   data: Maybe<ShortUrlData>;
@@ -88,7 +83,7 @@ const initialState: State = {
 const HomeView = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const handleSubmit = useCallback<OnSubmit<UrlFormValues>>(
+  const handleSubmit = useCallback<OnSubmit<ShortUrlInput>>(
     async (values, formikHelpers) => {
       dispatch(doRequest());
       try {
@@ -121,9 +116,9 @@ const HomeView = () => {
       <Box flex={1} height="200px" marginBottom={2}>
         <UrlShortenerSvg />
       </Box>
-      <Formik<UrlFormValues>
+      <Formik<ShortUrlInput>
         initialValues={initialValues}
-        validationSchema={shortUrlInputValidationSchema}
+        validationSchema={shortUrlInputSchema}
         validateOnMount
         onSubmit={handleSubmit}
       >

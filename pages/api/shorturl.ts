@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import handleErrors from '@/api/middlewares/handleErrors';
 import createError from '@/api/utils/createError';
 import { urlAliasLength } from '@/constants';
-import { shortUrlInputValidationSchema } from '@/utils/validationSchemas';
+import { shortUrlInputSchema } from '@/utils/validationSchemas';
 import * as Yup from 'yup';
 import { parse } from 'uri-js';
 
@@ -37,7 +37,7 @@ const isAbsoluteUrl = (url: string) => {
 
 const extractPostInput = async (req: NextApiRequest) => {
   try {
-    await shortUrlInputValidationSchema.validate(req.body);
+    await shortUrlInputSchema.validate(req.body);
   } catch (err) {
     throw createError(422, err.message);
   }
